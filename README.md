@@ -4,7 +4,7 @@ The image built using these scripts and sysroot extracted from an official SD ca
 ```
 docker pull stepanove/jnano-cross:qt5.15.2-opencv4.5.5
 ```
-The idea is to use this image as a base with some folder on the host mounted as container's home:
+The idea is to use this image with some folder on the host mounted as container's home:
 ```
 docker run -ti \
 -e DISPLAY=$DISPLAY \
