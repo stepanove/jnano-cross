@@ -99,7 +99,8 @@ root@003e2b3a8126:/# uname -a
 Linux 003e2b3a8126 5.4.0-91-generic #102-Ubuntu SMP Fri Nov 5 16:31:28 UTC 2021 aarch64 aarch64 aarch64 GNU/Linux
 ```
 This image can be used to generate a sysroot folder for your cross-toolchain, you can install packages inside of the container with apt (just like with a real board).
-You can configure ssh server to rsync it later. It's also possible to run GUI applications, heavy 3D graphics will work, though.
+You can configure ssh server to rsync it later. It's also possible to run GUI applications, heavy 3D graphics will not work, though.
+It also can be used to do a native build of anything you want, often it's much easier than cross-compilation, but the performance hit is quite significant.
 ```
 xhost +
 docker run -ti \
