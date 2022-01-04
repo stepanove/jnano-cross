@@ -79,6 +79,39 @@ After building everything you need, you can create an image using:
 ```
 docker commit {container_name} {image_tag}
 ```
+
+## Using docker to emulate Jetson Nano on x86_64 machine
+With QEMU and binfmt it's possible to run a docker container for different architectures on a plain x86_64 linux machine.
+I created a Jetson Nano docker image from a stock SD card image, it's available on docker hub. I used it to generate sysroot for building Qt and for testing cross-compiled binaries.
+```
+docker pull stepanove/jnano-cross:target
+```
+If you try to run on it x86 machine as is, you will get an error:
+```
+user@user-B450M-S2H:~$ docker run --rm -ti stepanove/jnano-cross:target 
+standard_init_linux.go:211: exec user process caused "exec format error"
+```
+To fix it you need to activate qemu-user-static container first:
+```
+user@user-B450M-S2H:~$ docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+user@user-B450M-S2H:~$ docker run --rm -ti stepanove/jnano-cross:target 
+root@003e2b3a8126:/# uname -a
+Linux 003e2b3a8126 5.4.0-91-generic #102-Ubuntu SMP Fri Nov 5 16:31:28 UTC 2021 aarch64 aarch64 aarch64 GNU/Linux
+```
+This image can be used to generate a sysroot folder for your cross-toolchain, you can install packages inside of the container with apt (just like with a real board).
+You can configure ssh server to rsync it later. It's also possible to run GUI applications, heavy 3D graphics will work, though.
+```
+xhost +
+docker run -ti \
+-e DISPLAY=$DISPLAY \
+-v /tmp/.X11-unix:/tmp/.X11-unix \
+-v /path/to/workspace:/home \
+stepanove/jnano-cross:target
+```
+To build a docker image from a root filesystem image you just need to execute following command in a folder containing your root fs
+```
+sudo tar -c . |docker import --change "ENTRYPOINT /bin/bash" - {image_tag}
+```
 ## References
 
 [Cross Compiling Qt for Embedded Systems](https://lifeofcode.net/)
@@ -88,3 +121,5 @@ docker commit {container_name} {image_tag}
 [Building Qt 5.15 LTS for Raspberry Pi on Raspberry Pi OS](https://www.tal.org/tutorials/building-qt-515-raspberry-pi)
 
 [How to Cross Compile OpenCV and MXNET for NVIDIA Jetson (AArch64 CUDA)](https://medium.com/trueface-ai/how-to-cross-compile-opencv-and-mxnet-for-nvidia-jetson-aarch64-cuda-99d467958bce)
+
+[qemu-user-static on github](https://github.com/multiarch/qemu-user-static)
