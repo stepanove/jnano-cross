@@ -18,7 +18,12 @@ cd build
 # Fix cuda tetection (https://medium.com/trueface-ai/how-to-cross-compile-opencv-and-mxnet-for-nvidia-jetson-aarch64-cuda-99d467958bce)
 echo 'set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")' | cat - ../cmake/OpenCVDetectCUDA.cmake > temp && mv temp ../cmake/OpenCVDetectCUDA.cmake
 
+jetson_sysroot=/opt/jetson/sysroot
+export PKG_CONFIG_PATH="$jetson_sysroot/usr/lib/aarch64-linux-gnu/pkgconfig:$jetson_sysroot/usr/share/pkgconfig:$jetson_sysroot/usr/lib/pkgconfig"
+export PKG_CONFIG_SYSROOT_DIR=$jetson_sysroot
+
 cmake \
+-D ARM_LINUX_SYSROOT=$jetson_sysroot \
 -D CMAKE_INSTALL_PREFIX=/usr/local/opencv-${version} \
 -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda/targets/aarch64-linux \
 -D CMAKE_TOOLCHAIN_FILE=../platforms/linux/aarch64-gnu.toolchain.cmake \

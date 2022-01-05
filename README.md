@@ -68,10 +68,11 @@ docker ps -a
 if the container is stopped
 
 ## opencv
-There is a script that can be used to build an arbitrary OpenCV version (with CUDA support), it's supposed to run within the jnano-cross container. You can specify the required OpenCV version as the first argument (4.5.5 by default). It will installed into /usr/local/opencv-${version} folder.
+There is a script that can be used to build an arbitrary OpenCV version (with CUDA support), it's supposed to run within the jnano-cross container with the target sysroot mounted on /opt/jetson/sysroot. You can specify the required OpenCV version as the first argument (4.5.5 by default). It will installed into /usr/local/opencv-${version} folder.
 
 ```
 cd /workspace/opencv
+./install-host-deps.sh
 ./build.sh 4.5.5
 
 ```
