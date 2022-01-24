@@ -114,6 +114,17 @@ To build a docker image from a root filesystem image you just need to execute fo
 ```
 sudo tar -c . |docker import --change "ENTRYPOINT /bin/bash" - {image_tag}
 ```
+
+## Notes on building SQL drivers
+Database support plugins can be built and added to the installation later, there is no need to rebuild Qt. The process is described in [Qt docs](https://doc.qt.io/qt-5/sql-driver.html).\
+For example, to build MYSQL driver you just need to execute following commands in qt-everywhere-src-${version}/qtbase/src/plugins/sqldrivers folder:
+```
+/usr/local/Qt${version}-jnano/bin/qmake --  MYSQL_INCDIR="/usr/include/mysql"
+make sub-mysql
+make sub-mysql-install_subtargets
+```
+It will build and install libsqlmysql.so to /usr/local/Qt${version}-jnano/plugins/sqldrivers/. You have to have libmysqlclient-dev package in your sysroot, of course. 
+
 ## References
 
 [Cross Compiling Qt for Embedded Systems](https://lifeofcode.net/)
@@ -125,3 +136,5 @@ sudo tar -c . |docker import --change "ENTRYPOINT /bin/bash" - {image_tag}
 [How to Cross Compile OpenCV and MXNET for NVIDIA Jetson (AArch64 CUDA)](https://medium.com/trueface-ai/how-to-cross-compile-opencv-and-mxnet-for-nvidia-jetson-aarch64-cuda-99d467958bce)
 
 [qemu-user-static on github](https://github.com/multiarch/qemu-user-static)
+
+[SQL Database Drivers](https://doc.qt.io/qt-5/sql-driver.html)
